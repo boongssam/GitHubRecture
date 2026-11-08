@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef4fc; --card:#ffffff; --ink:#1d2433; --muted:#5b6578;
+  --brand:#3367a8; --brand-soft:#dce8f8; --line:#d5deea;
+  --red:#d24b3e; --code-bg:#1e2533; --code-ink:#e6edf7; --code-dim:#8b98ad;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161f; --card:#1a2130; --ink:#e7ecf4; --muted:#9aa6ba;
+    --brand:#7fb0ec; --brand-soft:#22324a; --line:#2c3648;
+    --red:#ff7b6e; --code-bg:#0c1018; --code-ink:#e6edf7; --code-dim:#7f8ca3;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161f; --card:#1a2130; --ink:#e7ecf4; --muted:#9aa6ba;
+  --brand:#7fb0ec; --brand-soft:#22324a; --line:#2c3648;
+  --red:#ff7b6e; --code-bg:#0c1018; --code-ink:#e6edf7; --code-dim:#7f8ca3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.7;font-size:17px}
+code{font-family:"JetBrains Mono",ui-monospace,monospace}
+a{color:var(--brand)}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+header.hero{padding:64px 0 40px;text-align:center}
+.hero .eyebrow{color:var(--brand);font-weight:700;letter-spacing:.04em}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:900;margin:8px 0 12px;line-height:1.25}
+.hero .sub{color:var(--muted)}
+.hero .sub p{margin:0}
+
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc ul{list-style:none;margin:0 auto;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;max-width:920px}
+nav.toc a{display:block;white-space:nowrap;padding:6px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:15px;color:var(--ink);background:var(--card);border:1px solid var(--line)}
+nav.toc a:hover{border-color:var(--brand);color:var(--brand)}
+
+/* ## 큰 제목 */
+#content h2{font-size:clamp(24px,4vw,32px);font-weight:900;margin:48px 0 20px;padding-left:14px;border-left:6px solid var(--brand);scroll-margin-top:70px}
+/* #### 카드 밖 소제목 */
+#content h4{font-size:20px;margin:28px 0 12px}
+/* ### 카드 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin:0 0 18px}
+.card h3{margin:0 0 10px;font-size:20px;color:var(--brand)}
+.card h3 code{font-size:18px}
+.card p{margin:0 0 10px}
+.card > :last-child{margin-bottom:0}
+.card ul,.card ol{margin:0 0 10px;padding-left:1.4em}
+.card li{margin:4px 0}
+
+.lead{font-size:clamp(20px,3vw,24px);font-weight:700;text-align:center}
+.center{text-align:center}
+.stat{text-align:center;font-weight:900;font-size:clamp(26px,5vw,40px)}
+.stat strong{color:var(--red)}
+
+/* > 인용 = 강조 상자 */
+blockquote{background:var(--brand-soft);border-radius:12px;padding:14px 16px;margin:12px 0}
+blockquote p{margin:0}
+
+:not(pre) > code{background:var(--brand-soft);border-radius:6px;padding:1px 6px;font-size:.9em}
+pre{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:18px;overflow-x:auto;font-size:15px;line-height:1.75;margin:12px 0}
+button.copy{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #3a4558;background:#2a3344;color:#e6edf7;cursor:pointer}
+button.copy:hover{background:#36415a}
+button.copy:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+table{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:500}
+svg{max-width:100%;height:auto}
+
+footer{padding:48px 0 64px;text-align:center;color:var(--muted)}
+.qna{font-size:56px;font-weight:900;color:var(--brand);margin:0}
+@media print{nav.toc,button.copy{display:none}body{background:#fff}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <div class="eyebrow">바이브코딩 분과장 김대붕 · 하남중앙초등학교</div>
+  <h1>코딩의 동반자,<br>GitHub와 친해지기</h1>
+  <div class="sub"><p>연수는 20:00에 시작합니다. 시작 전 <b>Git 설치</b>를 확인해 주세요.</p></div>
+</header>
+
+<nav class="toc" aria-label="목차"><ul id="toc"></ul></nav>
+
+<main class="wrap" id="content"><p class="center">불러오는 중…</p></main>
+
+<footer class="wrap">
+  <p class="qna">QnA</p>
+  <p>코딩의 동반자, GitHub와 친해지기 · 바이브코딩 분과장 김대붕</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+var main = document.getElementById('content'), toc = document.getElementById('toc');
+
+// 본문은 content.md 에서 불러옵니다 (내용 수정은 content.md 에서)
+fetch('content.md', { cache: 'no-cache' })
+  .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(function (md) { main.innerHTML = marked.parse(md); build(); })
+  .catch(function () {
+    main.innerHTML = '<div class="card">content.md를 불러오지 못했습니다. 파일을 더블클릭해서 열면 안 되고, 터미널에서 <code>npx serve .</code> 로 열어 주세요.</div>';
+  });
+
+// 마크다운 규칙: ## = 목차에 들어가는 큰 제목, ### = 새 카드, #### = 카드 밖 소제목, *** = 카드 끊기
+function build() {
+var card = null;
+Array.prototype.slice.call(main.children).forEach(function (el, i) {
+  var t = el.tagName;
+  if (t === 'H2' || t === 'H4') {
+    card = null;
+    if (t === 'H2') {
+      if (!el.id) el.id = 'sec' + i;
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#' + el.id; a.textContent = el.textContent;
+      li.appendChild(a); toc.appendChild(li);
+    }
+    return;
+  }
+  if (t === 'HR') { card = null; el.remove(); return; }
+  if (t === 'H3' || !card) {
+    card = document.createElement('div'); card.className = 'card';
+    main.insertBefore(card, el);
+  }
+  card.appendChild(el);
+});
+
+// 코드 블록마다 복사 버튼 (# 주석 줄은 빼고 복사)
+document.querySelectorAll('#content pre').forEach(function (pre) {
+  var b = document.createElement('button');
+  b.type = 'button'; b.className = 'copy'; b.textContent = '복사';
+  b.addEventListener('click', function () {
+    var text = (pre.querySelector('code') || pre).textContent.split('\n')
+      .filter(function (l) { return l.trim() && l.trim()[0] !== '#'; }).join('\n');
+    navigator.clipboard.writeText(text).then(function () {
+      b.textContent = '복사됨!';
+      setTimeout(function () { b.textContent = '복사'; }, 1500);
+    }, function () { b.textContent = '복사 실패'; });
+  });
+  pre.appendChild(b);
+});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub와 친해지기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef4fc; --card:#ffffff; --ink:#1d2433; --muted:#5b6578;
+  --brand:#3367a8; --brand-soft:#dce8f8; --line:#d5deea;
+  --green:#2f9e6a; --green-soft:#ddf3e8; --purple:#8a5cc9; --purple-soft:#eee4fa;
+  --red:#d24b3e; --code-bg:#1e2533; --code-ink:#e6edf7; --code-dim:#8b98ad;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161f; --card:#1a2130; --ink:#e7ecf4; --muted:#9aa6ba;
+    --brand:#7fb0ec; --brand-soft:#22324a; --line:#2c3648;
+    --green:#5cc897; --green-soft:#1d3a2e; --purple:#b79af0; --purple-soft:#2f2645;
+    --red:#ff7b6e; --code-bg:#0c1018; --code-ink:#e6edf7; --code-dim:#7f8ca3;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161f; --card:#1a2130; --ink:#e7ecf4; --muted:#9aa6ba;
+  --brand:#7fb0ec; --brand-soft:#22324a; --line:#2c3648;
+  --green:#5cc897; --green-soft:#1d3a2e; --purple:#b79af0; --purple-soft:#2f2645;
+  --red:#ff7b6e; --code-bg:#0c1018; --code-ink:#e6edf7; --code-dim:#7f8ca3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.7;font-size:17px}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+a{color:var(--brand)}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+header.hero{padding:64px 0 40px;text-align:center}
+.hero .eyebrow{color:var(--brand);font-weight:700;letter-spacing:.04em}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:900;margin:8px 0 12px;line-height:1.25}
+.hero p{color:var(--muted);margin:0}
+
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc ul{list-style:none;margin:0 auto;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;max-width:920px}
+nav.toc a{display:block;white-space:nowrap;padding:6px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:15px;color:var(--ink);background:var(--card);border:1px solid var(--line)}
+nav.toc a:hover{border-color:var(--brand);color:var(--brand)}
+
+section{padding:40px 0 8px}
+.part{display:flex;align-items:baseline;gap:12px;margin:0 0 20px}
+.part .no{font-size:15px;font-weight:700;color:#fff;background:var(--brand);border-radius:8px;padding:2px 10px}
+.part h2{margin:0;font-size:clamp(24px,4vw,32px);font-weight:900}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin:0 0 18px}
+.card h3{margin:0 0 10px;font-size:20px;color:var(--brand)}
+.card p{margin:0 0 10px}
+.card p:last-child{margin-bottom:0}
+.lead{font-size:clamp(20px,3vw,24px);font-weight:700;text-align:center;margin:8px 0}
+.muted{color:var(--muted)}
+ul.dots{margin:0;padding-left:1.2em}
+ul.dots li{margin:4px 0}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+
+/* 파일명 지옥 */
+.files{font-size:14px;background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--line)}
+.files div::before{content:"📄 "}
+.files div:last-child{color:var(--red);font-weight:700}
+
+/* Git ↔ GitHub */
+.duo{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
+.duo .box{flex:1 1 200px;max-width:260px;border-radius:14px;padding:18px;border:2px solid var(--line)}
+.duo .box b{display:block;font-size:24px}
+.duo .arrow{font-size:28px;color:var(--muted)}
+.box.git{border-color:#f05133}.box.git b{color:#f05133}
+.box.hub{border-color:var(--ink)}
+
+/* 흐름도 */
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+.flow .st{flex:1 1 150px;border-radius:12px;padding:14px;text-align:center;font-weight:700}
+.flow .st small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.flow .ar{align-self:center;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);text-align:center;flex:0 0 auto}
+.s1{background:var(--brand-soft)}.s2{background:var(--green-soft)}.s3{background:var(--purple-soft)}
+@media (max-width:640px){.flow{flex-direction:column}.flow .ar{transform:rotate(90deg)}}
+
+/* 명령어 */
+.cmd{border-left:4px solid var(--brand)}
+.cmd .head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.cmd code.big{font-size:18px;font-weight:600}
+.say{color:var(--brand);font-weight:700}
+
+pre{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:18px 18px;overflow-x:auto;font-size:15px;line-height:1.75;margin:0}
+pre .c{color:var(--code-dim)}
+pre .p{color:#7ee0a6}
+button.copy{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #3a4558;background:#2a3344;color:#e6edf7;cursor:pointer}
+button.copy:hover{background:#36415a}
+button.copy:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:500}
+.tag{display:inline-block;border-radius:6px;padding:0 8px;font-size:14px;font-weight:700}
+.tag.g{background:var(--green-soft);color:var(--green)}
+.tag.r{background:color-mix(in srgb,var(--red) 15%,transparent);color:var(--red)}
+
+.callout{background:var(--brand-soft);border-radius:12px;padding:14px 16px;margin-top:12px}
+.stat{display:flex;align-items:center;justify-content:center;gap:14px;font-weight:900;font-size:clamp(26px,5vw,40px);margin:8px 0}
+.stat .down{color:var(--red)}
+
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border:0}
+.steps li::before{content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px}
+.steps label{flex:1;cursor:pointer}
+.steps input{margin-top:6px;width:18px;height:18px;accent-color:var(--green)}
+
+dl.tabs{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:0}
+dl.tabs dt{font-weight:700;font-family:"JetBrains Mono",monospace;font-size:15px}
+dl.tabs dd{margin:0}
+@media (max-width:520px){dl.tabs{grid-template-columns:1fr}dl.tabs dd{margin-bottom:8px}}
+
+footer{padding:48px 0 64px;text-align:center;color:var(--muted)}
+.qna{font-size:56px;font-weight:900;color:var(--brand);margin:0}
+@media print{nav.toc,button.copy{display:none}body{background:#fff}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <div class="eyebrow">바이브코딩 분과장 김대붕 · 하남중앙초등학교</div>
+  <h1>코딩의 동반자,<br>GitHub와 친해지기</h1>
+  <p>연수는 20:00에 시작합니다. 시작 전 <b>Git 설치</b>를 확인해 주세요.</p>
+</header>
+
+<nav class="toc" aria-label="연수 순서">
+  <ul>
+    <li><a href="#prep">시작 전 준비</a></li>
+    <li><a href="#s1">1. 깃허브란?</a></li>
+    <li><a href="#s2">2. 올리고 내려받기</a></li>
+    <li><a href="#lab">실습</a></li>
+    <li><a href="#s3">3. GitHub 탐색하기</a></li>
+    <li><a href="#cheat">명령어 요약</a></li>
+  </ul>
+</nav>
+
+<main class="wrap">
+
+<section id="prep">
+  <div class="card">
+    <h3>시작 전 준비: Git 설치 확인</h3>
+    <p>터미널(PowerShell)을 열고 아래 명령을 입력해 버전이 나오면 준비 완료입니다.</p>
+    <pre><button class="copy">복사</button>git --version</pre>
+    <p class="muted" style="margin-top:10px">버전이 나오지 않으면 <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">git-scm.com</a>에서 설치한 뒤 터미널을 다시 열어 주세요. GitHub 계정도 미리 만들어 두면 좋습니다.</p>
+  </div>
+</section>
+
+<!-- 1 -->
+<section id="s1">
+  <div class="part"><span class="no">1</span><h2>깃허브란?</h2></div>
+
+  <div class="card">
+    <p class="lead">제작하셨던 수많은 코드들,<br>잘 보관하고 계신가요?</p>
+  </div>
+
+  <div class="card">
+    <h3>GitHub = 코드 전용 저장 · 공유 · 공동작업 플랫폼</h3>
+    <p>구글 드라이브, iCloud 같은 클라우드 저장소도 있지만, GitHub는 <b>코드를 위해 만들어진</b> 저장소입니다.</p>
+    <ul class="dots">
+      <li>저장 및 다운로드, 편집이 편리</li>
+      <li><b>버전 관리</b> 가능</li>
+      <li>다른 수많은 개발자들의 오픈소스에 접근</li>
+      <li>포트폴리오 등의 공유</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>버전 관리가 왜 필요할까?</h3>
+    <p>수차례 코드를 수정하고 추가하다 보면, 이런 일이 생깁니다.</p>
+    <div class="grid2">
+      <div class="files mono">
+        <div>버전 14 (2026.11.4)</div>
+        <div>버전 13 (2026.9.14)</div>
+        <div>버전 12 (2026.7.25)</div>
+        <div>버전 11 (2026.7.25)</div>
+        <div style="color:inherit;font-weight:400">… 무엇이 바뀌었는지 알 수 없음</div>
+      </div>
+      <div class="files">
+        <div>프로젝트 결과 보고서_1126</div>
+        <div>프로젝트 결과 보고서_1126_수정</div>
+        <div>프로젝트 결과 보고서_최종</div>
+        <div>프로젝트 결과 보고서_최종_보고용_1127 최종</div>
+        <div>…_최종_진짜진짜최종</div>
+      </div>
+    </div>
+    <div class="callout">Git을 쓰면 버전마다 <b>"내가 무엇을 수정했는지"</b> 알아볼 수 있는 메모를 남길 수 있습니다.</div>
+    <pre style="margin-top:12px"><span class="p">PS&gt;</span> git add .
+<span class="p">PS&gt;</span> git commit -m "261107"
+<span class="c">[master 374b483] 261107
+ 1 file changed, 1 insertion(+), 1 deletion(-)</span></pre>
+  </div>
+
+  <div class="card">
+    <h3>Git과 GitHub는 다릅니다</h3>
+    <div class="duo">
+      <div class="box git"><b>git</b>버전 입력 시스템<br><small class="muted">내 컴퓨터에서 동작</small></div>
+      <div class="arrow" aria-hidden="true">⇄</div>
+      <div class="box hub"><b>GitHub</b>코드 저장소<br><small class="muted">인터넷(원격)에 있음</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <div class="part"><span class="no">2</span><h2>깃허브에 올리고 내려받기</h2></div>
+
+  <div class="card">
+    <h3>AI가 다 알아서 해주던데요?</h3>
+    <p><b>자동화의 역설</b> — 영국 심리학자 리잔 베인브리지가 1983년 '자동화의 아이러니'라고 이름 붙인 현상</p>
+    <p class="muted">기계가 일을 잘하게 돼 일상 업무를 자동화할수록 사람은 직접 수행할 기회를 점차 잃는다. 감시 책임은 사람에게 남지만, 바로 그 자동화 때문에 감시 능력은 퇴화한다.</p>
+    <div class="stat"><span>28.4%</span><span class="down">→ 22.4%</span></div>
+    <p style="text-align:center">폴란드의 관찰 연구: AI 보조 대장내시경 도입 후, <b>AI 없이</b> 검사했을 때의 선종 발견율 하락</p>
+    <div class="callout">그래서 AI에게 맡기더라도 <b>기본 용어와 명령어는 알고 있자!</b></div>
+  </div>
+
+  <h3 style="margin:28px 0 12px">필수 용어 — 알고는 있자!</h3>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Repository</h3>
+      <p><b>프로젝트 폴더.</b> 코드 파일과 그 변경 기록이 함께 들어 있는 저장소입니다. 줄여서 "레포"라고도 부릅니다.</p>
+    </div>
+    <div class="card">
+      <h3>Branch</h3>
+      <p><b>수정을 위한 복사본.</b> main 브랜치는 그대로 두고, 새 브랜치에서 작업한 뒤 검토(Review)를 거쳐 합칩니다(Merge).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Branch 흐름</h3>
+    <svg viewBox="0 0 640 170" width="100%" role="img" aria-label="main 브랜치에서 feature 브랜치를 만들고 커밋 후 pull request, review를 거쳐 merge하는 흐름">
+      <g font-family="Noto Sans KR" font-size="13" fill="currentColor">
+        <line x1="40" y1="40" x2="590" y2="40" stroke="#6fa3e3" stroke-width="3"/>
+        <line x1="40" y1="40" x2="220" y2="130" stroke="#6fa3e3" stroke-width="3"/>
+        <line x1="220" y1="130" x2="460" y2="130" stroke="#b07fd8" stroke-width="3"/>
+        <line x1="460" y1="130" x2="590" y2="40" stroke="#b07fd8" stroke-width="3"/>
+        <circle cx="40" cy="40" r="14" fill="#a9c9f2" stroke="#6fa3e3" stroke-width="2"/>
+        <circle cx="590" cy="40" r="14" fill="#94dcbc" stroke="#4bb487" stroke-width="2"/>
+        <circle cx="220" cy="130" r="13" fill="#d8b3ef" stroke="#b07fd8" stroke-width="2"/>
+        <circle cx="340" cy="130" r="13" fill="#d8b3ef" stroke="#b07fd8" stroke-width="2"/>
+        <circle cx="460" cy="130" r="13" fill="#d8b3ef" stroke="#b07fd8" stroke-width="2"/>
+        <text x="62" y="28">Main branch</text>
+        <text x="560" y="20">Merge</text>
+        <text x="150" y="160">Feature branch</text>
+        <text x="312" y="160">Commits</text>
+        <text x="500" y="105">Pull request → Review</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3>내 컴퓨터 → 저장소까지 3단계</h3>
+    <div class="flow">
+      <div class="st s1">Working directory<small>작업 중인 폴더</small></div>
+      <div class="ar">git add →</div>
+      <div class="st s2">Staging area<small>올릴 파일 장바구니</small></div>
+      <div class="ar">git commit →</div>
+      <div class="st s3">Local repository<small>버전(스냅샷) 저장</small></div>
+      <div class="ar">git push →</div>
+      <div class="st" style="background:var(--bg);border:1px solid var(--line)">GitHub<small>원격 저장소 (origin)</small></div>
+    </div>
+  </div>
+
+  <h3 style="margin:28px 0 12px">Git 명령어</h3>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git init</code></div>
+    <p class="say">"git 저장소(폴더)를 만들어!"</p>
+    <p class="muted">현재 폴더를 Git이 관리하는 저장소로 만듭니다. 폴더 안에 숨김 폴더 <code>.git</code>이 생깁니다.</p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git add .</code></div>
+    <p class="say">"현재 폴더에 있는 파일을 선택(스테이징)할게!"</p>
+    <p class="muted"><code>.</code>은 "현재 폴더 전체"라는 뜻입니다.</p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git commit -m "할말"</code></div>
+    <p class="say">"'할말'로 버전 기록해줘!"</p>
+    <p class="muted">메시지에는 날짜나 수정 내용을 적어 두면 나중에 찾기 쉽습니다. 예: <code>git commit -m "로그인 버튼 추가"</code></p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git branch -M main</code></div>
+    <p class="say">"기본 브랜치 이름을 main으로 변경!"</p>
+    <p class="muted">Git의 기본 브랜치명은 <b>master</b>, GitHub의 기본 브랜치명은 <b>main</b>이라서 이름을 맞춰 줍니다.</p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git remote add origin GitHub주소</code></div>
+    <p class="say">"origin이라는 이름으로 GitHub 레포지토리에 연결해줘!"</p>
+    <p class="muted">내 컴퓨터 🖥️ 🔗 GitHub. 한 번만 연결하면 됩니다.</p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git push -u origin main</code></div>
+    <p class="say">"origin의 main에 업로드해줘!"</p>
+    <p class="muted">내 컴퓨터(main) → <b>push</b> → GitHub(origin/main). <code>-u</code>를 한 번 붙여 두면 다음부터는 <code>git push</code>만 입력해도 됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h3>학교 컴퓨터에서 작업하다가, 우리 집에 왔을 때!</h3>
+    <p>GitHub(origin/main) → <b>pull 또는 clone</b> → 집 컴퓨터(main)</p>
+    <table>
+      <thead><tr><th></th><th><code>git clone 레포지토리주소</code></th><th><code>git pull origin main</code></th></tr></thead>
+      <tbody>
+        <tr><th>언제?</th><td><b>처음</b> 내려받을 때</td><td><b>이미 내려받은 뒤</b> 업데이트할 때</td></tr>
+        <tr><th>결과</th><td>저장소를 복제해 <b>새 폴더</b>를 만듭니다</td><td>원격 변경 사항을 가져와 <b>기존 폴더</b>에 반영합니다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Fork: 레포지토리 복사</h3>
+    <p>다른 사람의 GitHub 저장소 오른쪽 위 <b>Fork</b> 버튼을 누르면 내 GitHub 계정으로 사본이 만들어집니다.</p>
+    <table>
+      <thead><tr><th>비교</th><th>Fork</th><th>Clone</th></tr></thead>
+      <tbody>
+        <tr><th>복사 위치</th><td>내 GitHub 계정</td><td>내 컴퓨터</td></tr>
+        <tr><th>주요 목적</th><td>기여 · 독립 작업</td><td>로컬 작업</td></tr>
+        <tr><th>Push</th><td>내 저장소라 push 쉬움</td><td>원본 권한 없으면 push 불가</td></tr>
+      </tbody>
+    </table>
+    <ul class="dots" style="margin-top:14px">
+      <li><b>clone만:</b> 내 소유 저장소가 아니므로 코드 수정 후 push 불가</li>
+      <li><b>clone → 새 레포 만들어 push:</b> 가능하지만, 원본 코드에 pull request 보내기 어려움</li>
+      <li><b>fork → clone:</b> 내 소유 사본 생성 → 코드 다운 → push 가능 ✅</li>
+    </ul>
+    <div class="callout">💡 한 줄 요약: <b>Fork는 GitHub에 복사, Clone은 컴퓨터에 복사</b></div>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git switch -c feature</code></div>
+    <p class="say">"feature라는 브랜치를 만들어 이동해!"</p>
+    <p class="muted">main은 안전하게 두고, 새 기능은 feature 브랜치에서 실험한 뒤 합칩니다.</p>
+  </div>
+
+  <div class="card cmd">
+    <div class="head"><code class="big">git status</code></div>
+    <p class="say">"작업 폴더와 스테이징 영역 상태를 보여줘!"</p>
+    <table>
+      <tbody>
+        <tr><td><span class="tag g">초록</span></td><td><b>Changes to be committed</b><br>git add로 스테이징 영역(장바구니)에 정상적으로 올라간 파일</td></tr>
+        <tr><td><span class="tag r">빨강</span></td><td><b>Changes not staged for commit</b><br>Git이 추적하던 파일이지만, 수정 후 아직 git add를 하지 않은 파일</td></tr>
+        <tr><td><span class="tag r">빨강</span></td><td><b>Untracked files</b><br>새로 생겨서 Git이 한 번도 추적한 적 없는 파일</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 실습 -->
+<section id="lab">
+  <div class="part"><span class="no">✍</span><h2>실습하기</h2></div>
+  <div class="card">
+    <p class="lead">웹페이지를 하나 만들어서<br>GitHub에 직접 업로드해 봅시다.</p>
+  </div>
+  <div class="card">
+    <h3>준비</h3>
+    <ol class="steps">
+      <li><label for="c1">웹페이지 폴더 만들기 (예: <code>index.html</code> 한 개)</label><input type="checkbox" id="c1"></li>
+      <li><label for="c2">GitHub에서 <b>New repository</b>로 빈 저장소 만들고 주소 복사</label><input type="checkbox" id="c2"></li>
+      <li><label for="c3">VS Code 등에서 해당 폴더를 열고 터미널 열기</label><input type="checkbox" id="c3"></li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>명령어 (순서대로)</h3>
+<pre><button class="copy">복사</button><span class="c"># 1. 로컬 저장소 초기화</span>
+git init
+<span class="c"># 2. 파일 추가 및 첫 커밋</span>
+git add .
+git commit -m "First commit"
+<span class="c"># 3. 기본 브랜치 이름을 main으로 맞춤</span>
+git branch -M main
+<span class="c"># 4. 방금 만든 GitHub 저장소 주소 등록</span>
+git remote add origin 주소
+<span class="c"># 5. 원격 저장소로 첫 업로드</span>
+git push -u origin main</pre>
+    <p class="muted" style="margin-top:10px">'주소' 자리에 복사한 저장소 주소를 붙여 넣으세요. 처음 push할 때 GitHub 로그인 창이 뜰 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <div class="part"><span class="no">3</span><h2>GitHub 탐색하기</h2></div>
+  <div class="card">
+    <p>저장소 화면 위쪽 탭이 각각 무엇을 하는 곳인지 살펴봅시다.</p>
+    <dl class="tabs">
+      <dt>Code</dt><dd>코드 파일</dd>
+      <dt>Pull requests</dt><dd>수정 요청</dd>
+      <dt>Agents</dt><dd>이 저장소와 관련된 AI 코딩 에이전트 작업을 보는 곳</dd>
+      <dt>Actions</dt><dd>테스트나 빌드 같은 자동 작업의 실행 결과를 보는 곳</dd>
+      <dt>Projects</dt><dd>할 일을 표나 보드로 정리하는 곳</dd>
+      <dt>Security and quality</dt><dd>보안과 코드 품질 관련 정보</dd>
+      <dt>Insights</dt><dd>기여자와 변경 활동 등 통계 확인</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- 요약 -->
+<section id="cheat">
+  <div class="part"><span class="no">≡</span><h2>명령어 한눈에 보기</h2></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>명령어</th><th>뜻</th></tr></thead>
+      <tbody>
+        <tr><td><code>git init</code></td><td>저장소 만들기</td></tr>
+        <tr><td><code>git add .</code></td><td>파일 스테이징</td></tr>
+        <tr><td><code>git commit -m "메시지"</code></td><td>버전 기록</td></tr>
+        <tr><td><code>git branch -M main</code></td><td>기본 브랜치 이름을 main으로</td></tr>
+        <tr><td><code>git remote add origin 주소</code></td><td>GitHub 저장소 연결</td></tr>
+        <tr><td><code>git push -u origin main</code></td><td>업로드</td></tr>
+        <tr><td><code>git clone 주소</code></td><td>처음 내려받기</td></tr>
+        <tr><td><code>git pull origin main</code></td><td>최신 내용 받아오기</td></tr>
+        <tr><td><code>git switch -c 이름</code></td><td>새 브랜치 만들고 이동</td></tr>
+        <tr><td><code>git status</code></td><td>현재 상태 확인</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p class="qna">QnA</p>
+  <p>코딩의 동반자, GitHub와 친해지기 · 바이브코딩 분과장 김대붕</p>
+</footer>
+
+<script>
+document.querySelectorAll('button.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var pre = b.parentElement.cloneNode(true);
+    pre.querySelector('button').remove();
+    // 주석(#) 줄은 빼고 복사
+    var text = pre.textContent.split('\n').filter(function (l) { return l.trim() && l.trim()[0] !== '#'; }).join('\n');
+    navigator.clipboard.writeText(text).then(function () {
+      b.textContent = '복사됨!';
+      setTimeout(function () { b.textContent = '복사'; }, 1500);
+    }, function () { b.textContent = '복사 실패'; });
+  });
+});
+</script>
+</body>
+</html>
