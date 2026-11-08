@@ -18,7 +18,7 @@
 git --version
 ```
 
-버전이 나오지 않으면 [git-scm.com]([text](https://git-scm.com/install/windows))에서 설치한 뒤 터미널을 다시 열어 주세요. GitHub 계정도 미리 만들어 두면 좋습니다.
+버전이 나오지 않으면 [git-scm.com]((https://git-scm.com/install/windows))에서 설치한 뒤 터미널을 다시 열어 주세요. GitHub 계정도 미리 만들어 두면 좋습니다.
 
 ## 1. 깃허브란?
 
